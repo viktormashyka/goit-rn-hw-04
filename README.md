@@ -1,7 +1,7 @@
-# goit-rn-hw-03
+# goit-rn-hw-04
 
-Встановіть глобально expo cli: npm install -g expo-cli
+install global expo cli: `npm install -g expo-cli`
 
-Запустіть npm install для встановлення проекту
+run `npm install` to install project
 
-Запустіть npm start для запуску проекту
+run `npm start` to run project
