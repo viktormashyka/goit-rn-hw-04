@@ -11,6 +11,7 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   Platform,
+  TextInput,
 } from "react-native";
 import { NavigationProp } from "@react-navigation/native";
 import { colors } from "../styles/global";
@@ -68,6 +69,7 @@ const LoginScreen = ({ navigation }: { navigation: NavigationProp<any> }) => {
           <View style={styles.formContainer}>
             <Text style={[styles.title, { marginBottom: 32 }]}>Увійти</Text>
             <View style={{ gap: 16, marginBottom: 42 }}>
+              {/* // TODO: Add validation */}
               <Input
                 value={user.email}
                 autofocus={true}

@@ -117,6 +117,7 @@ const RegistrationScreen = ({
             </View>
             <Text style={[styles.title, { marginBottom: 32 }]}>Реєстрація</Text>
             <View style={{ gap: 16, marginBottom: 42 }}>
+              {/* // TODO: Add validation */}
               <Input
                 value={user.nickname}
                 autofocus={true}

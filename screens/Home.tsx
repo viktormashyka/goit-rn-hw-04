@@ -45,7 +45,7 @@ const Home = ({ navigation }: { navigation: NavigationProp<any> }) => {
           return <Ionicons name={iconName} size={size} color={color} />;
         },
         tabBarActiveTintColor: colors.orange,
-        tabBarInactiveTintColor: colors.black_primary,
+        tabBarInactiveTintColor: colors.black_primary_opacity,
         tabBarLabel: () => null,
       })}
     >
