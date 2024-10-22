@@ -54,6 +54,10 @@ const RegistrationScreen = ({
   );
 
   const handleSubmit = () => {
+    if (!user.nickname || !user.email || !user.password) {
+      alert("Please fill in all fields.");
+      return;
+    }
     console.log({ user });
     setUser(InitialState);
   };

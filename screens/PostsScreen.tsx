@@ -1,20 +1,9 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  Dimensions,
-  FlatList,
-} from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, Image, FlatList } from "react-native";
 import { NavigationProp } from "@react-navigation/native";
 import { colors } from "../styles/global";
 import { RouteProp } from "@react-navigation/native";
-import { SimpleLineIcons, FontAwesome5 } from "@expo/vector-icons";
-
-const { width: SCREEN_WIDTH } = Dimensions.get("screen");
-const pictureWidth = SCREEN_WIDTH - 32;
-const pictureHeight = pictureWidth * 0.7;
+import Post, { PostProps } from "../components/Post";
 
 const data = [
   {
@@ -47,17 +36,9 @@ const avatarUrl =
   "https://s3-alpha-sig.figma.com/img/d7eb/2439/565ee2bb708d7a3f27c90a7cd3c9f0fa?Expires=1730073600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=CtHVPTuQB2H3rFOE7XWaC-UpOHFHPtGobXLWgjCZkGnv38OwOtuZksAAt4O0c2e4mgipUcqb~vTWB7cKDdlAGQ4xZA~gJrBaCn7ZEuv6d0oqMbWVMpVGmw29YRZKhhAuHecwcnOmNpCdN4aL5MggbUPVQuB4~YpPgLQUBCaet4K4rZqSCVSTGjydvpRnzErE9SI-bSaYnH17T81foyjbpPlCnOCUekmgzWEsgMyZw-WrpfgYEFxOLnYvICU64wKKQC5cB6YLLDuEz9NyLtxnY23gudoSLAZDGeugJYvcNORusfoShaoasR6bCka3-MFRrz8krBxYac3jAJVoDRRjVQ__";
 
 type PostsScreenRouteProp = RouteProp<
-  { params: { user?: { email: string }; post?: ItemProps } },
+  { params: { user?: { email: string }; post?: PostProps } },
   "params"
 >;
-
-type ItemProps = {
-  id?: string;
-  pictureUrl: string;
-  pictureName: string;
-  comments: number;
-  locality: string;
-};
 
 const PostsScreen = ({
   navigation,
@@ -66,12 +47,21 @@ const PostsScreen = ({
   navigation: NavigationProp<any>;
   route: PostsScreenRouteProp;
 }) => {
-  const [posts, setPosts] = useState<ItemProps[]>(data);
-  if (route.params.post) {
-    console.log({ post: route.params.post });
-    setPosts((prev) => [...prev, route.params.post!]);
-  }
-  console.log({ posts });
+  const [posts, setPosts] = useState<PostProps[]>(data);
+
+  useEffect(() => {
+    if (route.params?.user) {
+      console.log({ user: route.params.user });
+    }
+    if (route.params?.post) {
+      console.log({ post: route.params.post });
+      setPosts((prev) => {
+        console.log({ prev });
+        return [...prev, route.params.post!];
+      });
+    }
+  }, [route.params?.post, route.params?.user]);
+
   return (
     <View style={styles.container}>
       <View
@@ -102,7 +92,7 @@ const PostsScreen = ({
       <FlatList
         data={posts}
         renderItem={({ item }) => (
-          <Item
+          <Post
             pictureUrl={item.pictureUrl}
             pictureName={item.pictureName}
             comments={item.comments}
@@ -116,37 +106,6 @@ const PostsScreen = ({
   );
 };
 
-const Item = ({
-  pictureUrl = " ",
-  pictureName,
-  comments,
-  locality,
-}: ItemProps) => (
-  <>
-    <View style={styles.pictureContainer}>
-      <Image
-        style={styles.picture}
-        source={
-          pictureUrl && {
-            uri: pictureUrl,
-          }
-        }
-      />
-    </View>
-    <Text style={styles.text}>{pictureName && pictureName}</Text>
-    <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-      <View style={{ flexDirection: "row", gap: 4 }}>
-        <FontAwesome5 name="comment" size={24} color={colors.gray} />
-        <Text style={styles.pictureCopy}>{comments && comments}</Text>
-      </View>
-      <View style={{ flexDirection: "row", gap: 6 }}>
-        <SimpleLineIcons name="location-pin" size={24} color={colors.gray} />
-        <Text style={styles.pictureCopy}>{locality && locality}</Text>
-      </View>
-    </View>
-  </>
-);
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -156,11 +115,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: colors.white,
     gap: 32,
-  },
-  text: {
-    fontFamily: "Roboto-Regular",
-    fontSize: 16,
-    lineHeight: 18.75,
   },
   avatarContainer: {
     width: 60,
@@ -174,27 +128,6 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     borderRadius: 16,
-  },
-  pictureContainer: {
-    width: pictureWidth,
-    height: pictureHeight,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: colors.border_gray,
-    backgroundColor: colors.light_gray,
-  },
-  picture: {
-    width: "100%",
-    height: "100%",
-    borderRadius: 8,
-    backgroundColor: colors.light_gray,
-  },
-  pictureCopy: {
-    fontFamily: "Roboto-Regular",
-    fontSize: 16,
-    lineHeight: 18.75,
-    textAlign: "left",
-    color: colors.gray,
   },
 });
 

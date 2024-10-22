@@ -45,9 +45,12 @@ const LoginScreen = ({ navigation }: { navigation: NavigationProp<any> }) => {
   );
 
   const handleSubmit = () => {
-    console.log({ user });
-    setUser(InitialState);
+    if (!user.email || !user.password) {
+      alert("Please fill in all fields.");
+      return;
+    }
     navigation.navigate("Home", { screen: "Posts", params: { user } });
+    setUser(InitialState);
   };
 
   const navigateToRegistration = () => {

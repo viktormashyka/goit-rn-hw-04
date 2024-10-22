@@ -7,11 +7,24 @@ type ButtonProps = {
   children: React.ReactNode;
   buttonStyle?: ViewStyle;
   onPress: () => void;
+  disabled?: boolean;
 };
 
-const Button: FC<ButtonProps> = ({ children, onPress, buttonStyle }) => {
+const Button: FC<ButtonProps> = ({
+  children,
+  onPress,
+  buttonStyle,
+  disabled = false,
+}) => {
   return (
-    <TouchableOpacity style={[styles.button, buttonStyle]} onPress={onPress}>
+    <TouchableOpacity
+      style={[
+        styles.button,
+        { backgroundColor: disabled ? colors.light_gray : colors.orange },
+        buttonStyle,
+      ]}
+      onPress={onPress}
+    >
       {children}
     </TouchableOpacity>
   );
