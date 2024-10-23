@@ -49,6 +49,14 @@ const PostsScreen = ({
 }) => {
   const [posts, setPosts] = useState<PostProps[]>(data);
 
+  const navigateToComments = (item: PostProps) => {
+    navigation.navigate("Comments", { item });
+  };
+  const navigateToMap = (item: PostProps) => {
+    console.log("navigateToMap => ", item);
+    navigation.navigate("Map", { item });
+  };
+
   useEffect(() => {
     if (route.params?.user) {
       console.log({ user: route.params.user });
@@ -56,11 +64,12 @@ const PostsScreen = ({
     if (route.params?.post) {
       console.log({ post: route.params.post });
       setPosts((prev) => {
-        console.log({ prev });
         return [...prev, route.params.post!];
       });
     }
   }, [route.params?.post, route.params?.user]);
+
+  console.log({ posts });
 
   return (
     <View style={styles.container}>
@@ -91,14 +100,20 @@ const PostsScreen = ({
       </View>
       <FlatList
         data={posts}
-        renderItem={({ item }) => (
-          <Post
-            pictureUrl={item.pictureUrl}
-            pictureName={item.pictureName}
-            comments={item.comments}
-            locality={item.locality}
-          />
-        )}
+        renderItem={({ item }) => {
+          console.log("Flat list item => ", item);
+          return (
+            <Post
+              pictureUrl={item.pictureUrl}
+              pictureName={item.pictureName}
+              comments={item.comments}
+              locality={item.locality}
+              geoLocation={item.geoLocation}
+              navigateToComments={() => navigateToComments(item)}
+              navigateToMap={() => navigateToMap(item)}
+            />
+          );
+        }}
         keyExtractor={(item) => item.id}
         ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
       />

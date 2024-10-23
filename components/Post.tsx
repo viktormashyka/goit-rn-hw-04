@@ -13,6 +13,9 @@ export type PostProps = {
   pictureName: string;
   comments: number;
   locality: string;
+  geoLocation?: { latitude: number; longitude: number };
+  navigateToComments?: (item: PostProps) => void;
+  navigateToMap?: (item: PostProps) => void;
 };
 
 const Post = ({
@@ -20,6 +23,9 @@ const Post = ({
   pictureName,
   comments,
   locality,
+  geoLocation = { latitude: 0, longitude: 0 },
+  navigateToComments,
+  navigateToMap,
 }: PostProps) => (
   <>
     <View style={styles.pictureContainer}>
@@ -37,11 +43,23 @@ const Post = ({
     <Text style={styles.text}>{pictureName && pictureName}</Text>
     <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
       <View style={{ flexDirection: "row", gap: 4 }}>
-        <FontAwesome5 name="comment" size={24} color={colors.gray} />
+        <FontAwesome5
+          name="comment"
+          size={24}
+          color={colors.gray}
+          onPress={() =>
+            navigateToComments({ pictureUrl, pictureName, comments, locality })
+          }
+        />
         <Text style={styles.pictureCopy}>{comments && comments}</Text>
       </View>
       <View style={{ flexDirection: "row", gap: 6 }}>
-        <SimpleLineIcons name="location-pin" size={24} color={colors.gray} />
+        <SimpleLineIcons
+          name="location-pin"
+          size={24}
+          color={colors.gray}
+          onPress={() => navigateToMap(pictureName, locality, geoLocation)}
+        />
         <Text style={styles.pictureCopy}>{locality && locality}</Text>
       </View>
     </View>

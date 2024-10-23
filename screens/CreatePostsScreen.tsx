@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   Text,
@@ -17,6 +17,8 @@ import Input from "../components/Input";
 import Button from "../components/Button";
 import Camera from "../components/Camera";
 
+import * as Location from "expo-location";
+
 const InitialState = {
   title: "",
   locality: "",
@@ -28,8 +30,29 @@ const CreatePostsScreen = ({ navigation, route }) => {
   const [geoLocation, setGeoLocation] = useState(null);
   const camera = useRef<CameraView>(null);
   const [facing, setFacing] = useState<CameraType>("back");
+  // TODO: move Camera to helpers
   const [permission, requestPermission] = useCameraPermissions();
   const isEnabled = location.title && location.locality;
+
+  useEffect(() => {
+    // Geolocation
+    // TODO: move Location to helpers
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.log("Permission to access location was denied");
+      }
+
+      let currentLocation = await Location.getCurrentPositionAsync({});
+      const coords = {
+        latitude: currentLocation.coords.latitude,
+        longitude: currentLocation.coords.longitude,
+      };
+
+      console.log({ coords });
+      setGeoLocation(coords);
+    })();
+  }, []);
 
   const localityIcon = (
     <SimpleLineIcons
@@ -76,11 +99,9 @@ const CreatePostsScreen = ({ navigation, route }) => {
       pictureName: location.title,
       comments: 0,
       locality: location.locality,
+      geoLocation,
     };
-    navigation.navigate("Home", {
-      screen: "Posts",
-      params: { post },
-    });
+    navigation.navigate("Posts", { post });
     setLocation(InitialState);
     setPhotoUrl("");
   };

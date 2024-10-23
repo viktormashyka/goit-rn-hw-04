@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "goit-rn-hw-04",
-    "slug": "goit-rn-hw-04",
+    "name": "goit-socials-app",
+    "slug": "goit-socials-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -13,7 +13,11 @@
     },
     "assetBundlePatterns": ["assets/fonts/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.goit-socials-app",
+      "config": {
+        "googleMapsApiKey": "AIzaSyAh-cCHi-XjYbnP-Lg-kSVDRpdioz1_m1Q"
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -32,6 +36,18 @@
           "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
           "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
           "recordAudioAndroid": true
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+        }
+      ],
+      [
+        "expo-media-library",
+        {
+          "isAccessMediaLocationEnabled": true
         }
       ]
     ]

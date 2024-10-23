@@ -1,10 +1,13 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View } from "react-native";
+import Map from "../components/Map";
 
-const MapScreen = () => {
+const MapScreen = ({ route }) => {
+  const { item } = route.params;
+  console.log("Map screen item => ", item);
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text style={{ fontSize: 24 }}>Map Screen</Text>
+      <Map item={item} />
     </View>
   );
 };

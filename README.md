@@ -1,4 +1,4 @@
-# goit-rn-hw-04
+# goit-socials
 
 install global expo cli: `npm install -g expo-cli`
 

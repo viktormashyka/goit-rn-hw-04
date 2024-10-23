@@ -1,16 +1,17 @@
 import React from "react";
-import { View, Text, StyleSheet, Dimensions } from "react-native";
-import MapView, { Marker } from "react-native-maps";
+import { StyleSheet, Dimensions } from "react-native";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("screen");
 
-const Map = () => {
+const Map = ({ item }) => {
+  console.log("Map component item => ", item);
   return (
     <MapView
       style={styles.mapStyle}
       region={{
-        latitude: 37.78825,
-        longitude: -122.4324,
+        latitude: item?.geoLocation?.latitude ?? 0,
+        longitude: item?.geoLocation?.longitude ?? 0,
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
       }}
@@ -18,23 +19,21 @@ const Map = () => {
       minZoomLevel={15}
       onMapReady={() => console.log("Map is ready")}
       onRegionChange={() => console.log("Region change")}
+      // provider={PROVIDER_GOOGLE} // FIXME: Google Maps is not available on iOS
     >
       <Marker
-        title="I am here"
-        coordinate={{ latitude: 37.78825, longitude: -122.4324 }}
-        description="Hello"
+        title={item?.pictureName}
+        coordinate={{
+          latitude: item?.geoLocation?.latitude ?? 0,
+          longitude: item?.geoLocation?.longitude ?? 0,
+        }}
+        description={item?.locality}
       />
     </MapView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
   mapStyle: {
     width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT,

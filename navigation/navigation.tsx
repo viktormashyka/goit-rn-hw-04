@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { NavigationProp } from "@react-navigation/native";
 import RegistrationScreen from "../screens/RegistrationScreen";
 import LoginScreen from "../screens/LoginScreen";
 import PostsScreen from "../screens/PostsScreen";
@@ -18,7 +17,7 @@ const AuthStack = createStackNavigator();
 const Tabs = createBottomTabNavigator();
 const PostsStack = createStackNavigator();
 
-const Navigation = ({ navigation }: { navigation: NavigationProp<any> }) => {
+const Navigation = () => {
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(true); // Update this line after refactoring
 
   const logOut = () => {
@@ -38,22 +37,25 @@ const Navigation = ({ navigation }: { navigation: NavigationProp<any> }) => {
     setIsUserLoggedIn(false); // Update this line after refactoring
   };
 
-  const getTabNavigator = () => {
+  const TabNavigator = () => {
     return (
       <Tabs.Navigator
+        initialRouteName="PostsStack"
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, color, size }) => {
             let iconName;
             size = focused ? 32 : 24;
 
-            if (route.name === "Posts") {
+            if (route.name === "PostsStack") {
               iconName = focused ? "grid" : "grid-outline";
             } else if (route.name === "CreatePosts") {
               iconName = focused ? "add-circle" : "add-circle-outline";
             } else if (route.name === "Profile") {
               iconName = focused ? "person" : "person-outline";
             }
-            return <Ionicons name={iconName} size={size} color={color} />;
+            return (
+              <Ionicons name={iconName as any} size={size} color={color} />
+            );
           },
           tabBarActiveTintColor: colors.orange,
           tabBarInactiveTintColor: colors.black_primary_opacity,
@@ -61,8 +63,8 @@ const Navigation = ({ navigation }: { navigation: NavigationProp<any> }) => {
         })}
       >
         <Tabs.Screen
-          name="Posts"
-          component={getPostsStack}
+          name="PostsStack"
+          component={PostsStackNavigator}
           options={{
             title: "Публікації",
             headerRight: logOut,
@@ -84,7 +86,7 @@ const Navigation = ({ navigation }: { navigation: NavigationProp<any> }) => {
     );
   };
 
-  const getAuthStack = () => {
+  const AuthStackNavigator = () => {
     return (
       <AuthStack.Navigator initialRouteName="Login">
         <AuthStack.Screen
@@ -101,7 +103,7 @@ const Navigation = ({ navigation }: { navigation: NavigationProp<any> }) => {
     );
   };
 
-  const getPostsStack = () => {
+  const PostsStackNavigator = () => {
     return (
       <PostsStack.Navigator initialRouteName="PostsScreen">
         <PostsStack.Screen
@@ -123,7 +125,7 @@ const Navigation = ({ navigation }: { navigation: NavigationProp<any> }) => {
     );
   };
 
-  return <>{isUserLoggedIn ? getTabNavigator() : getAuthStack()}</>;
+  return <>{isUserLoggedIn ? <TabNavigator /> : <AuthStackNavigator />}</>;
 };
 
 const styles = StyleSheet.create({

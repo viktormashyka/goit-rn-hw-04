@@ -58,7 +58,6 @@ const RegistrationScreen = ({
       alert("Please fill in all fields.");
       return;
     }
-    console.log({ user });
     setUser(InitialState);
   };
 
