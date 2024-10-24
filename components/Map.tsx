@@ -5,7 +5,6 @@ import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("screen");
 
 const Map = ({ item }) => {
-  console.log("Map component item => ", item);
   return (
     <MapView
       style={styles.mapStyle}

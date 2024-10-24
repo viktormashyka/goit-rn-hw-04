@@ -1,8 +1,10 @@
 import "react-native-gesture-handler";
 import React, { useState } from "react";
-import { View, StyleSheet } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
+import { colors } from "../styles/global";
 import RegistrationScreen from "../screens/RegistrationScreen";
 import LoginScreen from "../screens/LoginScreen";
 import PostsScreen from "../screens/PostsScreen";
@@ -10,8 +12,8 @@ import CreatePostsScreen from "../screens/CreatePostsScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import MapScreen from "../screens/MapScreen";
 import CommentsScreen from "../screens/CommentsScreen";
-import { Feather, Ionicons } from "@expo/vector-icons";
-import { colors } from "../styles/global";
+import LogoutButton from "../components/LogoutButton";
+import BackButton from "../components/BackButton";
 
 const AuthStack = createStackNavigator();
 const Tabs = createBottomTabNavigator();
@@ -20,43 +22,52 @@ const PostsStack = createStackNavigator();
 const Navigation = () => {
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(true); // Update this line after refactoring
 
-  const logOut = () => {
-    return (
-      <View style={styles.iconContainer}>
-        <Feather
-          name="log-out"
-          size={24}
-          color={colors.border_gray}
-          onPress={handleLogOut}
-        />
-      </View>
-    );
-  };
+  const forwardBackButton = (navigation) => (
+    <BackButton onPress={() => navigation.goBack()} />
+  );
+
+  const logOut = () => <LogoutButton onPress={handleLogOut} />;
 
   const handleLogOut = () => {
     setIsUserLoggedIn(false); // Update this line after refactoring
   };
 
   const TabNavigator = () => {
+    const getTabBarVisibility = (route) => {
+      const routeName = getFocusedRouteNameFromRoute(route) ?? "";
+      if (routeName === "Comments" || routeName === "Map") {
+        return { display: "none" };
+      }
+      return { display: "flex" };
+    };
+
+    const getHeaderVisibility = (route) => {
+      const routeName = getFocusedRouteNameFromRoute(route) ?? "";
+      return !(routeName === "Comments" || routeName === "Map");
+    };
+
+    const getTabIcon = (routeName, focused) => {
+      const icons = {
+        PostsStack: focused ? "grid" : "grid-outline",
+        CreatePosts: focused ? "add-circle" : "add-circle-outline",
+        Profile: focused ? "person" : "person-outline",
+      };
+      return icons[routeName] || "help-circle-outline";
+    };
+
     return (
       <Tabs.Navigator
         initialRouteName="PostsStack"
         screenOptions={({ route }) => ({
-          tabBarIcon: ({ focused, color, size }) => {
-            let iconName;
-            size = focused ? 32 : 24;
-
-            if (route.name === "PostsStack") {
-              iconName = focused ? "grid" : "grid-outline";
-            } else if (route.name === "CreatePosts") {
-              iconName = focused ? "add-circle" : "add-circle-outline";
-            } else if (route.name === "Profile") {
-              iconName = focused ? "person" : "person-outline";
-            }
-            return (
-              <Ionicons name={iconName as any} size={size} color={color} />
-            );
-          },
+          tabBarIcon: ({ focused, color }) => (
+            <Ionicons
+              name={getTabIcon(route.name, focused)}
+              size={focused ? 32 : 24}
+              color={color}
+            />
+          ),
+          headerRightContainerStyle: { paddingRight: 16 },
+          headerLeftContainerStyle: { paddingLeft: 16 },
           tabBarActiveTintColor: colors.orange,
           tabBarInactiveTintColor: colors.black_primary_opacity,
           tabBarLabel: () => null,
@@ -65,17 +76,21 @@ const Navigation = () => {
         <Tabs.Screen
           name="PostsStack"
           component={PostsStackNavigator}
-          options={{
+          options={({ route }) => ({
             title: "Публікації",
             headerRight: logOut,
-          }}
+            tabBarStyle: getTabBarVisibility(route),
+            headerShown: getHeaderVisibility(route),
+          })}
         />
         <Tabs.Screen
           name="CreatePosts"
           component={CreatePostsScreen}
-          options={{
+          options={({ navigation }) => ({
             title: "Створити публікацію",
-          }}
+            tabBarStyle: { display: "none" },
+            headerLeft: () => forwardBackButton(navigation),
+          })}
         />
         <Tabs.Screen
           name="Profile"
@@ -105,7 +120,13 @@ const Navigation = () => {
 
   const PostsStackNavigator = () => {
     return (
-      <PostsStack.Navigator initialRouteName="PostsScreen">
+      <PostsStack.Navigator
+        initialRouteName="PostsScreen"
+        screenOptions={{
+          headerRightContainerStyle: { paddingRight: 16 },
+          headerLeftContainerStyle: { paddingLeft: 16 },
+        }}
+      >
         <PostsStack.Screen
           name="Posts"
           component={PostsScreen}
@@ -114,12 +135,20 @@ const Navigation = () => {
         <PostsStack.Screen
           name="Map"
           component={MapScreen}
-          options={{ headerShown: true }}
+          options={({ navigation }) => ({
+            headerShown: true,
+            title: "Мапа",
+            headerLeft: () => forwardBackButton(navigation),
+          })}
         />
         <PostsStack.Screen
           name="Comments"
           component={CommentsScreen}
-          options={{ headerShown: true }}
+          options={({ navigation }) => ({
+            headerShown: true,
+            title: "Коментарі",
+            headerLeft: () => forwardBackButton(navigation),
+          })}
         />
       </PostsStack.Navigator>
     );
@@ -127,11 +156,5 @@ const Navigation = () => {
 
   return <>{isUserLoggedIn ? <TabNavigator /> : <AuthStackNavigator />}</>;
 };
-
-const styles = StyleSheet.create({
-  iconContainer: {
-    paddingRight: 16,
-  },
-});
 
 export default Navigation;

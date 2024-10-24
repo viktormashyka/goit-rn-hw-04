@@ -1,5 +1,12 @@
 import React from "react";
-import { View, Text, StyleSheet, Image, Dimensions } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Dimensions,
+  TouchableOpacity,
+} from "react-native";
 import { colors } from "../styles/global";
 import { SimpleLineIcons, FontAwesome5 } from "@expo/vector-icons";
 
@@ -11,7 +18,7 @@ export type PostProps = {
   id?: string;
   pictureUrl: string;
   pictureName: string;
-  comments: number;
+  comments: [];
   locality: string;
   geoLocation?: { latitude: number; longitude: number };
   navigateToComments?: (item: PostProps) => void;
@@ -21,7 +28,7 @@ export type PostProps = {
 const Post = ({
   pictureUrl = " ",
   pictureName,
-  comments,
+  comments = [],
   locality,
   geoLocation = { latitude: 0, longitude: 0 },
   navigateToComments,
@@ -42,26 +49,22 @@ const Post = ({
     </View>
     <Text style={styles.text}>{pictureName && pictureName}</Text>
     <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-      <View style={{ flexDirection: "row", gap: 4 }}>
-        <FontAwesome5
-          name="comment"
-          size={24}
-          color={colors.gray}
-          onPress={() =>
-            navigateToComments({ pictureUrl, pictureName, comments, locality })
-          }
-        />
-        <Text style={styles.pictureCopy}>{comments && comments}</Text>
-      </View>
-      <View style={{ flexDirection: "row", gap: 6 }}>
-        <SimpleLineIcons
-          name="location-pin"
-          size={24}
-          color={colors.gray}
-          onPress={() => navigateToMap(pictureName, locality, geoLocation)}
-        />
+      <TouchableOpacity
+        style={{ flexDirection: "row", gap: 4 }}
+        onPress={() =>
+          navigateToComments({ pictureUrl, pictureName, comments, locality })
+        }
+      >
+        <FontAwesome5 name="comment" size={24} color={colors.gray} />
+        <Text style={styles.pictureCopy}>{comments.length}</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={{ flexDirection: "row", gap: 6 }}
+        onPress={() => navigateToMap(pictureName, locality, geoLocation)}
+      >
+        <SimpleLineIcons name="location-pin" size={24} color={colors.gray} />
         <Text style={styles.pictureCopy}>{locality && locality}</Text>
-      </View>
+      </TouchableOpacity>
     </View>
   </>
 );

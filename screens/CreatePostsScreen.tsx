@@ -33,6 +33,7 @@ const CreatePostsScreen = ({ navigation, route }) => {
   // TODO: move Camera to helpers
   const [permission, requestPermission] = useCameraPermissions();
   const isEnabled = location.title && location.locality;
+  // const isEnabled = photoUrl && location.title && location.locality; TODO: uncomment after adding photoUrl
 
   useEffect(() => {
     // Geolocation
@@ -49,7 +50,6 @@ const CreatePostsScreen = ({ navigation, route }) => {
         longitude: currentLocation.coords.longitude,
       };
 
-      console.log({ coords });
       setGeoLocation(coords);
     })();
   }, []);
@@ -97,7 +97,7 @@ const CreatePostsScreen = ({ navigation, route }) => {
       id: uuid.v4(),
       pictureUrl: photoUrl,
       pictureName: location.title,
-      comments: 0,
+      comments: [],
       locality: location.locality,
       geoLocation,
     };
