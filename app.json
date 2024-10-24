@@ -14,10 +14,7 @@
     "assetBundlePatterns": ["assets/fonts/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.goit-socials-app",
-      "config": {
-        "googleMapsApiKey": "AIzaSyAh-cCHi-XjYbnP-Lg-kSVDRpdioz1_m1Q"
-      }
+      "bundleIdentifier": "com.goit-socials-app"
     },
     "android": {
       "adaptiveIcon": {
